@@ -29,26 +29,41 @@ app.post('/slack', function(req, res) {
 var postIssues = function(iss) {
 	var input = iss;
 	var issueData = input.split("$$");
-	console.log(issueData);
+	if(isueData[0]) {
+		var subject = issueData[0].replace(/[^a-zA-Z0-9]/g, ' ');
+	} else {
+		var subject = "no subject provided";
+	}
+	if(isueData[1]) {
+		var description = issueData[1].replace(/[^a-zA-Z0-9]/g, ' ');
+	} else {
+		var description = "no description provided";
+	};
+	console.log(input);
+	console.log(subject);
+	console.log(description);
+	makeRequest(subject, description);
+}
+var makeRequest = function(subject, request) {
 	request({
 		url: url,
 		method: "POST",
+		rejectUnauthorized: false,
 		json: {
-			"issue": {
-			"project_id": 19,
-			"tracker_id": 3,
-			"status_id": 1,
-			"subject": issueData[0],
-			"description": issueData[1]
+			"issue" : {
+				"project id" : 19,
+				"tracker id" : 3,
+				"status_id" : 1,
+				"subject" : subject,
+				"description" : description
 			}
 		}
-	},  function(error, response, body){
-    		if(error) {
-        		console.log(error);
-    		} else {
-        		console.log(response, body);
+	}, function(error, response, body) {
+		if(error) {
+			console.log(error);
+		} else {
+			console.log(response, body);
 		}
 	})
-}("title $$ description");
-
+};
 app.listen(process.env.PORT || 3000);
